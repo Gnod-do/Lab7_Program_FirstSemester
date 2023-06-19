@@ -13,6 +13,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.*;
 
+
+
 /**
  * Handles user connection.
  */
@@ -26,6 +28,20 @@ public class ConnectionHandler implements Runnable {
     private CommandManager commandManager;
 
     private ForkJoinPool forkJoinPool = ForkJoinPool.commonPool();
+
+    /**
+     * ForkJoinPool là một lớp trong Java, nằm trong gói java.util.concurrent,
+     * cung cấp một thread pool cho việc xử lý song song trên cấu trúc chia để trị (divide-and-conquer).
+     * Nó được thiết kế đặc biệt để xử lý các công việc đệ quy hoặc phân tách thành các phần nhỏ hơn và
+     * thực hiện chúng một cách song song.
+     *
+     * ForkJoinPool là một dạng đặc biệt của ExecutorService, có sự tối ưu hóa cho việc xử lý các công
+     * việc đệ quy có tính chất chia để trị. Nó sử dụng mô hình "fork-join" trong đó các công việc lớn
+     * được chia nhỏ thành các công việc nhỏ hơn và được thực hiện bất đồng bộ trên các luồng khác nhau
+     * trong pool. Khi các công việc con hoàn thành, kết quả của chúng được kết hợp lại.
+     *
+     * => Tóm lại cái này để chia nhỏ công việc để xử lý đồng thời.
+     */
 
     private ExecutorService fixedThreadPool = Executors.newFixedThreadPool(1);
 

@@ -29,7 +29,8 @@ public class PasswordHasher {
             }
             return newPassword;
         } catch (NoSuchAlgorithmException exception) {
-            Outputer.printerror("Не найден алгоритм хэширования пароля!");
+            Outputer.printerror(exception.getMessage());
+            Outputer.printerror("Алгоритм хеширования пароля не найден!");
             throw new IllegalStateException(exception);
         }
     }

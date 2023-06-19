@@ -24,6 +24,17 @@ public class Server {
     private CommandManager commandManager;
     private boolean isStopped;
     private ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
+
+    //CachedThreadPool - Thread pool có bộ nhớ cache
+
+    /**
+     *
+     * CachedThreadPool (Thread pool có bộ nhớ cache) là một loại ExecutorService trong Java,
+     * nằm trong gói java.util.concurrent. Nó cung cấp một thread pool linh hoạt có thể tạo ra
+     * các luồng theo nhu cầu và tái sử dụng chúng khi chúng không cần thiết nữa.
+     */
+
+
     private Semaphore semaphore;
 
     public Server(int port, int maxClients, CommandManager commandManager) {

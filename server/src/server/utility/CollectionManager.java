@@ -180,6 +180,7 @@ public class CollectionManager {
 
     public void clearCollection() {
         groupCollection.clear();
+        loadCollection();
     }
 
 
@@ -211,4 +212,5 @@ public class CollectionManager {
             Outputer.printerror("Коллекция не может быть загружена!");
         }
     }
+
 }

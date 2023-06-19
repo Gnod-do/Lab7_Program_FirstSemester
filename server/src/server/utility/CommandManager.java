@@ -61,6 +61,19 @@ public class CommandManager {
 
     private ReadWriteLock collectionLocker = new ReentrantReadWriteLock();
 
+
+    /**
+     * ReadWriteLock là một giao diện trong Java thuộc gói java.util.concurrent.locks,
+     * cung cấp một cơ chế đồng bộ hóa để quản lý truy cập vào dữ liệu có thể đọc và ghi.
+     * Giao diện này định nghĩa hai khóa (lock) riêng biệt là khóa đọc (read lock) và khóa ghi (write lock),
+     * cho phép nhiều luồng đọc truy cập vào dữ liệu cùng một lúc, nhưng chỉ cho phép một luồng viết truy cập
+     * vào dữ liệu tại một thời điểm.
+     *
+     * ReadWriteLock hữu ích trong các tình huống mà dữ liệu có thể được đọc nhiều lần nhưng chỉ được ghi
+     * bởi một luồng duy nhất. Nó cung cấp cơ chế tối ưu cho việc truy cập đọc song song, đồng thời đảm bảo
+     * tính nhất quán và an toàn của dữ liệu khi có luồng đang thực hiện ghi.
+     */
+
     public CommandManager(Command helpCommand, Command infoCommand, Command showCommand, Command addCommand, Command updateCommand,
                           Command removeByIdCommand, Command clearCommand, Command exitCommand, Command executeScriptCommand,
                           Command removeAtIndexCommand, Command sortCommand, Command historyCommand, Command sumOfTransferredStudentsCommand,

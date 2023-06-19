@@ -6,10 +6,7 @@ import common.interaction.GroupRaw;
 import common.interaction.User;
 import common.utility.Outputer;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -20,6 +17,9 @@ import java.util.LinkedList;
 public class DatabaseCollectionManager {
 
     private final String SELECT_ALL_GROUPS = "SELECT * FROM " + DatabaseHandler.GROUP_TABLE;
+
+    private final String SELECT_ALL_GROUPS_BY_USER_ID = SELECT_ALL_GROUPS + " WHERE " +
+            DatabaseHandler.GROUP_TABLE_USER_ID_COLUMN + " = ?";
 
     private final String SELECT_GROUP_BY_ID = SELECT_ALL_GROUPS + " WHERE " +
             DatabaseHandler.GROUP_TABLE_ID_COLUMN + " = ?";
@@ -163,6 +163,7 @@ public class DatabaseCollectionManager {
         PreparedStatement preparedSelectAllStatement = null;
         try {
             preparedSelectAllStatement = databaseHandler.getPreparedStatement(SELECT_ALL_GROUPS, false);
+//            preparedSelectAllStatement.setLong(8, getPersonIdByGroupId(groupId));
             ResultSet resultSet = preparedSelectAllStatement.executeQuery();
             while (resultSet.next()) {
                 groupList.add(createGroup(resultSet));
@@ -172,6 +173,27 @@ public class DatabaseCollectionManager {
             throw new DatabaseHandlingException();
         } finally {
             databaseHandler.closePreparedStatement(preparedSelectAllStatement);
+        }
+        return groupList;
+    }
+
+    public LinkedList<StudyGroup> getCollectionByUserId(Long userId) throws DatabaseHandlingException {
+        LinkedList<StudyGroup> groupList = new LinkedList<>();
+        PreparedStatement preparedSelectAllByUserIdStatement = null;
+        int userIdconvert = userId.intValue();
+
+        try {
+            preparedSelectAllByUserIdStatement = databaseHandler.getPreparedStatement(SELECT_ALL_GROUPS_BY_USER_ID, false);
+            preparedSelectAllByUserIdStatement.setInt(1, userIdconvert);
+            ResultSet resultSet = preparedSelectAllByUserIdStatement.executeQuery();
+            while (resultSet.next()) {
+                groupList.add(createGroup(resultSet));
+            }
+        } catch (SQLException exception) {
+            Outputer.printerror(exception.getMessage());
+            throw new DatabaseHandlingException();
+        } finally {
+            databaseHandler.closePreparedStatement(preparedSelectAllByUserIdStatement);
         }
         return groupList;
     }
@@ -527,8 +549,9 @@ public class DatabaseCollectionManager {
      * @throws DatabaseHandlingException When there's exception inside.
      */
 
-    public void clearCollection() throws DatabaseHandlingException {
-        LinkedList<StudyGroup> groupList = getCollection();
+    public void clearCollection(User user) throws DatabaseHandlingException {
+        Long userId = databaseUserManager.getUserIdByUsername(user);
+        LinkedList<StudyGroup> groupList = getCollectionByUserId(userId);
         for (StudyGroup group : groupList) {
             deleteGroupById(group.getId());
         }

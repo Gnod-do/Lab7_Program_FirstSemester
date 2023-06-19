@@ -2,7 +2,6 @@ package server.commands;
 
 import common.data.StudyGroup;
 import common.exceptions.DatabaseHandlingException;
-import common.exceptions.ManualDatabaseEditException;
 import common.exceptions.PermissionDeniedException;
 import common.exceptions.WrongAmountOfElementsException;
 import common.interaction.User;
@@ -31,14 +30,20 @@ public class ClearCommand extends AbstractCommand{
 
     @Override
     public boolean execute(String stringArgument, Object objectArgument, User user) {
+        int count = 0;
         try {
             if (!stringArgument.isEmpty() || objectArgument != null) throw new WrongAmountOfElementsException();
             for (StudyGroup group : collectionManager.getCollection()) {
-                if (!group.getOwner().equals(user)) throw new PermissionDeniedException();
-                if (!databaseCollectionManager.checkGroupUserId(group.getId(), user)) throw new ManualDatabaseEditException();
+                if (group.getOwner().equals(user)) count++;
+//                if (count == 0) throw new PermissionDeniedException();
+//                if (!databaseCollectionManager.checkGroupUserId(group.getId(), user)) throw new ManualDatabaseEditException();
             }
+
+            if (count == 0) throw new PermissionDeniedException();
+
+            databaseCollectionManager.clearCollection(user);
             collectionManager.clearCollection();
-            databaseCollectionManager.clearCollection();
+            
             ResponseOutputer.appendln("Коллекция очищена!");
             return true;
         } catch (WrongAmountOfElementsException exception) {
@@ -50,18 +55,13 @@ public class ClearCommand extends AbstractCommand{
             Outputer.printerror("Phia server: " + exception.getMessage());
             ResponseOutputer.appenderror("Недостаточно прав для выполнения данной команды!");
             ResponseOutputer.appendln("Принадлежащие другим пользователям объекты доступны только для чтения.");
-        } catch (ManualDatabaseEditException exception) {
-            Outputer.printerror("Phia server: " + exception.getMessage());
-            ResponseOutputer.appenderror("Произошло прямое изменение базы данных!");
-            ResponseOutputer.appendln("Перезапустите клиент для избежания возможных ошибок.");
         }
+//        } catch (ManualDatabaseEditException exception) {
+//            Outputer.printerror("Phia server: " + exception.getMessage());
+//            ResponseOutputer.appenderror("Произошло прямое изменение базы данных!");
+//            ResponseOutputer.appendln("Перезапустите клиент для избежания возможных ошибок.");
+//        }
         return false;
     }
-
-
-
-
-
-
 
 }

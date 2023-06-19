@@ -22,7 +22,7 @@ public class App {
 
 //    private static String databasePassword = "21052002";
 
-    private static String databaseAddress = "jdbc:postgresql://localhost:5555/studs";
+    private static String databaseAddress = "jdbc:postgresql://127.0.0.1:5656/studs";
 
 //    private static String databaseAddress = "jdbc:postgresql://localhost:5432/Lab7DB";
 
